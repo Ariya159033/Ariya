@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>异维A酸软胶囊用药记录</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Arial", sans-serif; }
+        body { background: #f5f5f5; padding: 2rem; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        /* 用药安全提示（醒目样式） */
+        .safety-tip { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+        .safety-tip h3 { color: #856404; margin-bottom: 0.5rem; }
+        .safety-tip p { color: #721c24; font-size: 0.95rem; line-height: 1.5; }
+        /* 天数显示区域 */
+        .day-count { text-align: center; margin: 2rem 0; }
+        .day-count h2 { font-size: 1.8rem; color: #333; margin-bottom: 1rem; }
+        .day-count .days { font-size: 3rem; font-weight: bold; color: #2c3e50; }
+        /* 日期设置区域 */
+        .date-set { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #eee; }
+        .date-set label { display: block; margin-bottom: 0.5rem; color: #555; font-weight: 500; }
+        .date-set input { padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 1rem; }
+        .date-set button { padding: 0.8rem 2rem; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+        .date-set button:hover { background: #2980b9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 重要：用药安全提示（异维A酸软胶囊为处方药，必须先强调风险） -->
+        <div class="safety-tip">
+            <h3>⚠️ 用药安全提示</h3>
+            <p>1. 异维A酸软胶囊为<strong>处方药</strong>，需在医生指导下服用，不可自行增减剂量或停药；</p>
+            <p>2. 孕妇、备孕期/哺乳期女性禁用，服药期间及停药后3个月内需严格避孕；</p>
+            <p>3. 可能出现皮肤干燥、唇炎等副作用，如出现严重不适（如情绪异常、肝功能异常）需立即就医；</p>
+            <p>4. 服药期间避免献血、避免同时使用其他角质剥脱类药物（如维A酸乳膏）。</p>
+        </div>
+
+        <!-- 用药天数显示 -->
+        <div class="day-count">
+            <h2>服用异维A酸软胶囊已</h2>
+            <div class="days" id="dayCount">0</div>
+            <h2>天</h2>
+        </div>
+
+        <!-- 日期设置（用户可输入开始服药日期） -->
+        <div class="date-set">
+            <label for="startDate">选择开始服药日期：</label>
+            <input type="date" id="startDate" required>
+            <button onclick="calculateDays()">更新用药天数</button>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时，若本地有保存的开始日期，自动计算天数
+        window.onload = function() {
+            const savedStartDate = localStorage.getItem('medicationStartDate');
+            if (savedStartDate) {
+                document.getElementById('startDate').value = savedStartDate;
+                calculateDays();
+            }
+        };
+
+        // 计算用药天数
+        function calculateDays() {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const today = new Date();
+            // 只比较日期，忽略时分秒
+            startDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            
+            if (startDate > today) {
+                alert('开始日期不能晚于今天，请重新选择！');
+                return;
+            }
+
+            // 计算天数差（毫秒转天）
+            const timeDiff = today - startDate;
+            const dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24)) + 1; // +1是当天算第1天
+            
+            // 显示天数并保存日期到本地（刷新页面不丢失）
+            document.getElementById('dayCount').textContent = dayDiff;
+            localStorage.setItem('medicationStartDate', document.getElementById('startDate').value);
+        }
+    </script>
+</body>
+</html>
